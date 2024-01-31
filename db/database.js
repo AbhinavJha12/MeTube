@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
-export const connectDB = () => {
+export const connectDB = async () => {
   try {
     console.log("hahahah");
-    mongoose
+    return await mongoose
       .connect(process.env.MONGO_URL, {
         dbName: "backendapi",
       })
