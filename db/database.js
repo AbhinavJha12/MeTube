@@ -5,7 +5,7 @@ export const connectDB = async () => {
     console.log("hahahah");
     return await mongoose
       .connect(process.env.MONGO_URL, {
-        dbName: "backendapi",
+        dbName: "meTubeDB",
       })
       .then((c) => console.log(`Database Connected with ${c.connection.host}`))
       .catch((e) => console.log(e));
