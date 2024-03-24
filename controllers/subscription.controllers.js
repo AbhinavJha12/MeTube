@@ -80,7 +80,7 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
     if(!isValidObjectId(channelId)){
         throw new ApiError(400, "invalid userid")
     }
-    const subscribers = await Subscription.aggregate([
+    const channels = await Subscription.aggregate([
         {
             $match: {
                 subscriber:   new mongoose.Types.ObjectId(channelId)
@@ -98,7 +98,7 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
     return res
     .status(200)
     .json(
-        new ApiResponse(200, subscribers.channels, "Subscribed channels fetched successfully")
+        new ApiResponse(200, channels.channels, "Subscribed channels fetched successfully")
     )
 })
 
