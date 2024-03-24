@@ -13,11 +13,11 @@ cloudinary.config({
 const uploadOnCloudinary = async (localFilePath) => {
     try {
         if (!localFilePath) return null
-         console.log(typeof(process.env.CLOUDINARY_API_KEY))   
+        //  console.log(typeof(process.env.CLOUDINARY_API_KEY))   
         const response = await cloudinary.uploader.upload(localFilePath, {
             resource_type: "auto"
         })
-        console.log(response)
+        // console.log(response)
        
         fs.unlinkSync(localFilePath)
         return response;
@@ -28,5 +28,23 @@ const uploadOnCloudinary = async (localFilePath) => {
         return null;
     }
 }
+const deleteOnCloudinary = async (CloudinaryUrl) => {
+    if(!CloudinaryUrl)return null
+    try{
+        var parts = CloudinaryUrl.split("/");
+        var result = parts[parts.length - 1];
+        result = result.split(".")[0];
+        // console.log(result)
+       const response = await cloudinary.uploader
+       .destroy(result)
+       .then(result => console.log(result));
+        return response;
 
-export {uploadOnCloudinary}
+    }
+    catch (error) {
+        console.log(error + "delete nhi ho rha")
+        
+        return null;
+    }
+}
+export {uploadOnCloudinary, deleteOnCloudinary}

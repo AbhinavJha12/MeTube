@@ -1,7 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import {User} from "../models/user.js"
 import {ApiError} from "../utils/apiError.js"
-import { uploadOnCloudinary } from "../utils/fileUpload.js";
+import { uploadOnCloudinary, deleteOnCloudinary } from "../utils/fileUpload.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 
 
@@ -29,6 +29,7 @@ const registerUser = asyncHandler( async (req, res) => {
 
 
     const {fullName, email, username, password } = req.body
+    // console.log(req.body)
 
     if (
         [fullName, email, username, password].some((field) => field?.trim() === "")  // check it again
@@ -64,7 +65,7 @@ const registerUser = asyncHandler( async (req, res) => {
     const coverImage = await uploadOnCloudinary(coverImageLocalPath)
 
     if (!avatar) {
-        throw new ApiError(400, "Avatar file is required")
+        throw new ApiError(400, "Clodinary Bt")
     }
    
 
@@ -94,7 +95,7 @@ const loginUser = asyncHandler(async (req, res) =>{
     
 
     const {email, username, password} = req.body
-    console.log(email);
+    // console.log(req.body);
 
     if (!(username || email)) {
         throw new ApiError(400, "username or email is required")
@@ -274,7 +275,8 @@ const updateUserAvatar = asyncHandler(async(req, res) => {
         throw new ApiError(400, "Avatar file is missing")
     }
 
-    //TODO: delete old image - assignment
+
+
 
     const avatar = await uploadOnCloudinary(avatarLocalPath)
 
@@ -282,7 +284,14 @@ const updateUserAvatar = asyncHandler(async(req, res) => {
         throw new ApiError(400, "Error while uploading on avatar")
         
     }
+    const user1 = await User.findById(
+        req.user?._id
+    )
+    // console.log(user1.avatar)
 
+    let cloudinaryUrl = user1.avatar
+    let response = await deleteOnCloudinary(cloudinaryUrl)
+        console.log(response)
     const user = await User.findByIdAndUpdate(
         req.user?._id,
         {
@@ -307,7 +316,7 @@ const updateUserCoverImage = asyncHandler(async(req, res) => {
         throw new ApiError(400, "Cover image file is missing")
     }
 
-    //TODO: delete old image - assignment
+
 
 
     const coverImage = await uploadOnCloudinary(coverImageLocalPath)
@@ -316,6 +325,12 @@ const updateUserCoverImage = asyncHandler(async(req, res) => {
         throw new ApiError(400, "Error while uploading on avatar")
         
     }
+    const user1 = await User.findById(
+        req.user?._id
+    )
+
+    cloudinaryUrl = user1.avatar
+    await deleteOnCloudinary(cloudinaryUrl)
 
     const user = await User.findByIdAndUpdate(
         req.user?._id,
